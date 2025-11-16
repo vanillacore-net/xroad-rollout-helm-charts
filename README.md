@@ -27,28 +27,32 @@ See `DEPLOYMENT_GUIDE.md` for deployment instructions.
 ### Main Branch (Upstream Mirror)
 The **main** branch mirrors the original X-Road deployment from the source server.
 
-**When you push to main on GitHub, it automatically syncs to the original server:**
+**ONLY main branch pushes sync to the original server:**
 ```bash
 git checkout main
 git merge dev --no-ff  # Merge changes from dev
-git push origin main   # Pushes to BOTH GitHub AND original server
+git push-main          # Pushes main to BOTH GitHub AND original server
 ```
 
-The remote is configured to push to both locations:
-- **GitHub**: `https://github.com/vanillacore-net/xroad-rollout-helm-charts.git`
-- **Server**: `ssh://karsten@167.71.79.238/home/karsten/im-karsten`
+**Remotes:**
+- **origin** (GitHub): `https://github.com/vanillacore-net/xroad-rollout-helm-charts.git`
+- **server** (Original): `ssh://karsten@167.71.79.238/home/karsten/im-karsten`
+- **Alias**: `git push-main` = pushes main to both remotes
 
-### Dev Branch (Infrastructure Adaptations)
+### Dev Branch (Infrastructure Adaptations - GitHub Only)
 The **dev** branch contains our infrastructure-specific changes:
 - Namespace templating (im-ns → {{ .Release.Namespace }})
 - MetalLB LoadBalancer configurations
 - Infrastructure-specific adaptations
 
+**Dev branch is NOT synced to server** - it only exists on GitHub for our infrastructure work.
+
 **Development workflow:**
 1. Make changes in dev branch
 2. Test thoroughly
-3. Create PR to merge dev → main
-4. Merge and push main (auto-syncs to server)
+3. Push to GitHub: `git push origin dev` (GitHub only, NOT to server)
+4. Create PR to merge dev → main
+5. Merge and push: `git push-main` (syncs to BOTH GitHub and server)
 
 ## License
 
