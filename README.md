@@ -22,37 +22,42 @@ This repository contains Helm charts and configurations for deploying X-Road Inf
 
 See `DEPLOYMENT_GUIDE.md` for deployment instructions.
 
-## Repository Sync Workflow
+## Repository Workflow
+
+### Branch Protection
+Both **main** and **dev** branches are protected:
+- ✅ Pull requests required (no direct pushes)
+- ✅ No approvals required (self-merge allowed)
+- ✅ Force pushes disabled
+- ✅ Branch deletions disabled
+- ✅ Enforced for admins
 
 ### Main Branch (Upstream Mirror)
-The **main** branch mirrors the original X-Road deployment from the source server.
+The **main** branch mirrors the original X-Road deployment state.
 
-**ONLY main branch pushes sync to the original server:**
+**Changes to main require PR:**
 ```bash
-git checkout main
-git merge dev --no-ff  # Merge changes from dev
-git push-main          # Pushes main to BOTH GitHub AND original server
+git checkout dev
+# Make and test changes
+git push origin dev
+
+# Create PR on GitHub: dev → main
+# Merge PR on GitHub
+# Manually sync to server if needed
 ```
 
-**Remotes:**
-- **origin** (GitHub): `https://github.com/vanillacore-net/xroad-rollout-helm-charts.git`
-- **server** (Original): `ssh://karsten@167.71.79.238/home/karsten/im-karsten`
-- **Alias**: `git push-main` = pushes main to both remotes
-
-### Dev Branch (Infrastructure Adaptations - GitHub Only)
-The **dev** branch contains our infrastructure-specific changes:
+### Dev Branch (Infrastructure Adaptations)
+The **dev** branch contains infrastructure-specific changes:
 - Namespace templating (im-ns → {{ .Release.Namespace }})
 - MetalLB LoadBalancer configurations
 - Infrastructure-specific adaptations
 
-**Dev branch is NOT synced to server** - it only exists on GitHub for our infrastructure work.
-
 **Development workflow:**
-1. Make changes in dev branch
-2. Test thoroughly
-3. Push to GitHub: `git push origin dev` (GitHub only, NOT to server)
-4. Create PR to merge dev → main
-5. Merge and push: `git push-main` (syncs to BOTH GitHub and server)
+1. Create feature branch from dev
+2. Make and test changes
+3. Create PR to dev
+4. Merge PR
+5. When ready to sync upstream, create PR: dev → main
 
 ## License
 
