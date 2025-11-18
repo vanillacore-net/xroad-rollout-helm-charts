@@ -28,4 +28,5 @@ spec:
       port: 9998
       targetPort: 9998
   selector:
-    app: cs-1
+    app.kubernetes.io/component: central-server
+    serverId: "1"
