@@ -41,10 +41,11 @@ The X-Road Central Server is accessible via DNS at `cs.im.assembly.govstack.glob
 ### 1. Configure values.yaml
 
 ```yaml
-service:
-  type: LoadBalancer
-  annotations:
-    metallb.universe.tf/address-pool: default
+central-server:
+  Service:
+    type: LoadBalancer
+    annotations:
+      metallb.universe.tf/address-pool: default
 
 database:
   host: "xroad-db"

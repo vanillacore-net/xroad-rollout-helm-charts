@@ -27,5 +27,4 @@ spec:
       port: 4000
       targetPort: 4000
   selector:
-    app.kubernetes.io/name: xroad-central-server
-    app.kubernetes.io/component: central-server
+    app: cs-1

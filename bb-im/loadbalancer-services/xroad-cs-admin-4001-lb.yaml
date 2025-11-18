@@ -25,5 +25,4 @@ spec:
       port: 4001
       targetPort: 4001
   selector:
-    app.kubernetes.io/name: xroad-central-server
-    app.kubernetes.io/component: central-server
+    app: cs-1

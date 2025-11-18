@@ -28,5 +28,4 @@ spec:
       port: 9998
       targetPort: 9998
   selector:
-    app.kubernetes.io/name: xroad-central-server
-    app.kubernetes.io/component: central-server
+    app: cs-1
