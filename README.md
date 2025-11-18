@@ -37,18 +37,46 @@ See chart-specific documentation for detailed instructions.
 - **main** - Mirrors the original upstream state from source repository
 - **dev** - Active development with infrastructure adaptations for our deployment
 
-## Upstream Sync
+## Usage
 
-The main branch tracks the original X-Road deployment configurations. Changes should be made in dev branch and merged via pull requests.
+See `DEPLOYMENT_GUIDE.md` for deployment instructions.
 
-To sync from upstream:
+## Repository Workflow
+
+### Branch Protection
+Both **main** and **dev** branches are protected:
+- ✅ Pull requests required (no direct pushes)
+- ✅ No approvals required (self-merge allowed)
+- ✅ Force pushes disabled
+- ✅ Branch deletions disabled
+- ✅ Enforced for admins
+
+### Main Branch (Upstream Mirror)
+The **main** branch mirrors the original X-Road deployment state.
+
+**Changes to main require PR:**
 ```bash
-# On source server
-git pull origin main
+git checkout dev
+# Make and test changes
+git push origin dev
 
-# Push to this mirror
-git push vanillacore main
+# Create PR on GitHub: dev → main
+# Merge PR on GitHub
+# Manually sync to server if needed
 ```
+
+### Dev Branch (Infrastructure Adaptations)
+The **dev** branch contains infrastructure-specific changes:
+- Namespace templating (im-ns → {{ .Release.Namespace }})
+- MetalLB LoadBalancer configurations
+- Infrastructure-specific adaptations
+
+**Development workflow:**
+1. Create feature branch from dev
+2. Make and test changes
+3. Create PR to dev
+4. Merge PR
+5. When ready to sync upstream, create PR: dev → main
 
 ## License
 
