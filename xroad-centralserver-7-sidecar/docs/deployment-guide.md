@@ -62,17 +62,17 @@ instance:
 ### 2. Install Chart
 
 ```bash
-helm install xroad-cs . -f values.yaml -n xroad-system --create-namespace
+helm install xroad-cs . -f values.yaml -n im-ns --create-namespace
 ```
 
 ### 3. Verify
 
 ```bash
 # Pods
-kubectl get pods -n xroad-system
+kubectl get pods -n im-ns
 
 # Services - should show LoadBalancer with MetalLB IP
-kubectl get svc -n xroad-system
+kubectl get svc -n im-ns
 ```
 
 ### 4. Access UI
@@ -96,8 +96,8 @@ curl -k https://cs.im.assembly.govstack.global:8443
 ### Cannot Access UI
 
 ```bash
-kubectl get pods -n xroad-system
-kubectl logs -n xroad-system xroad-cs-xxxxx -c centerserver
+kubectl get pods -n im-ns
+kubectl logs -n im-ns xroad-cs-xxxxx -c centerserver
 ```
 
 Solutions:
