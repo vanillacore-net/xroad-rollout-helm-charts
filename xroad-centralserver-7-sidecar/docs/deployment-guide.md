@@ -78,7 +78,7 @@ kubectl get svc -n im-ns
 ### 4. Access UI
 
 ```bash
-https://cs.im.assembly.govstack.global:4001
+https://cs.im.assembly.govstack.global:4000
 
 # Default: xrd / secret
 ```
@@ -86,8 +86,13 @@ https://cs.im.assembly.govstack.global:4001
 ## Verification
 
 ```bash
-# Test ports
+# Test admin UI
+curl -k https://cs.im.assembly.govstack.global:4000
+
+# Test registration API
 curl -k https://cs.im.assembly.govstack.global:4001
+
+# Test client HTTPS
 curl -k https://cs.im.assembly.govstack.global:8443
 ```
 
@@ -119,7 +124,8 @@ Check security groups allow TCP 4001, 8443 ingress.
 
 | Port | Purpose | External |
 |------|---------|----------|
-| 4001 | CS registration | Yes |
+| 4000 | CS admin UI | Yes |
+| 4001 | CS registration API | Yes |
 | 8443 | CS client HTTPS | Yes |
 | 5500 | Config distribution | Optional |
 | 5432 | Database | No |
