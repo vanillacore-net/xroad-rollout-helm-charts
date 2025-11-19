@@ -48,7 +48,6 @@ xroad-rollout-helm-charts/
 │   ├── x-road-csx/          # Central Server Helm chart
 │   ├── x-road-ssx/          # Security Server Helm chart
 │   ├── test-ca/             # Test CA Helm chart
-│   ├── loadbalancer-services/ # MetalLB LoadBalancer service definitions
 │   ├── hurl-auto-config/    # Configuration automation scripts
 │   └── example-service/     # Example service for testing
 ├── add-im/                  # Additional IM cluster configurations
