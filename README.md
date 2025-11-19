@@ -1,82 +1,87 @@
-# X-Road Helm Charts - VanillaCore Mirror
+# X-Road Helm Charts for BB-IM Deployment
 
-This repository contains Helm charts and configurations for deploying X-Road Information Mediator components to Kubernetes clusters.
+This repository contains Helm charts and deployment configurations for X-Road Information Mediator components on Kubernetes.
 
-## Repository Structure
+## Components
 
-- `bb-im/` - Main X-Road components for BB-IM cluster
-  - `test-ca/` - Test Certificate Authority (trust anchor)
-  - `x-road-csx/` - Central Server Helm chart
-  - `x-road-ssx/` - Security Server Helm chart
-  - `loadbalancer-services/` - MetalLB LoadBalancer service definitions
-  - `hurl-auto-config/` - Automated configuration scripts
-  - `example-service/` - Example API services for testing
-- `add-im/` - Additional IM cluster configurations
-- `bastion/` - Bastion host Helm chart
-- `xroad-centralserver-7-sidecar/` - Sidecar-based Central Server chart
-  - `docs/deployment-guide.md` - Central Server deployment instructions
-- `docs/` - General documentation
+### Central Server (CS)
+Governance component that manages X-Road member registration, configuration distribution, and trust anchors.
 
-## Documentation
+**Chart Location**: `bb-im/x-road-csx/`
+**Documentation**: [docs/central-server-deployment.md](docs/central-server-deployment.md)
 
-- **Central Server Deployment**: See `xroad-centralserver-7-sidecar/docs/deployment-guide.md`
-- **Complete Deployment Guide**: See `DEPLOYMENT_GUIDE.md` for all components (Test CA, CS, SS)
-- **Migration Analysis**: See `MIGRATION_ANALYSIS.md`
+### Security Server (SS)
+Message mediation component that handles secure communication between service providers and consumers.
+
+**Chart Location**: `bb-im/x-road-ssx/`
+**Documentation**: [docs/security-server-deployment.md](docs/security-server-deployment.md)
+
+### Test CA
+Certificate authority for testing and development environments.
+
+**Chart Location**: `bb-im/test-ca/`
+
+## Prerequisites
+
+- Kubernetes cluster with kubectl access
+- MetalLB installed for LoadBalancer services
+- Namespace: `im-ns`
+- PersistentVolume support
+
+## Deployment Order
+
+X-Road components must be deployed in this specific order:
+
+1. **Test CA** - Provides certificates for CS and SS
+2. **Central Server** - Core governance component
+3. **Security Server** - Message mediation component
 
 ## Quick Start
 
-1. Ensure prerequisites (VPN access, kubectl configured, MetalLB installed)
-2. Deploy Test CA first (provides certificate services)
-3. Deploy Central Server (governance component)
-4. Deploy Security Servers (message mediation)
+See component-specific deployment guides in the `docs/` directory.
 
-See chart-specific documentation for detailed instructions.
+## Repository Structure
+
+```
+xroad-rollout-helm-charts/
+├── bb-im/
+│   ├── x-road-csx/          # Central Server Helm chart
+│   ├── x-road-ssx/          # Security Server Helm chart
+│   ├── test-ca/             # Test CA Helm chart
+│   ├── loadbalancer-services/ # MetalLB LoadBalancer service definitions
+│   ├── hurl-auto-config/    # Configuration automation scripts
+│   └── example-service/     # Example service for testing
+├── add-im/                  # Additional IM cluster configurations
+├── bastion/                 # Bastion host Helm chart
+├── xroad-centralserver-7-sidecar/ # Sidecar-based Central Server chart
+└── docs/                    # Deployment documentation
+```
 
 ## Branching Strategy
 
 - **main** - Mirrors the original upstream state from source repository
-- **dev** - Active development with infrastructure adaptations for our deployment
+- **dev** - Active development with infrastructure adaptations for deployment
 
-## Usage
+## Branch Protection
 
-See `DEPLOYMENT_GUIDE.md` for deployment instructions.
-
-## Repository Workflow
-
-### Branch Protection
 Both **main** and **dev** branches are protected:
-- ✅ Pull requests required (no direct pushes)
-- ✅ No approvals required (self-merge allowed)
-- ✅ Force pushes disabled
-- ✅ Branch deletions disabled
-- ✅ Enforced for admins
+- Pull requests required (no direct pushes)
+- No approvals required (self-merge allowed)
+- Force pushes disabled
+- Branch deletions disabled
+- Enforced for admins
 
-### Main Branch (Upstream Mirror)
-The **main** branch mirrors the original X-Road deployment state.
+## Development Workflow
 
-**Changes to main require PR:**
-```bash
-git checkout dev
-# Make and test changes
-git push origin dev
-
-# Create PR on GitHub: dev → main
-# Merge PR on GitHub
-# Manually sync to server if needed
-```
-
-### Dev Branch (Infrastructure Adaptations)
-The **dev** branch contains infrastructure-specific changes:
-- Namespace templating (im-ns → {{ .Release.Namespace }})
-- MetalLB LoadBalancer configurations
-- Infrastructure-specific adaptations
-
-**Development workflow:**
 1. Create feature branch from dev
 2. Make and test changes
 3. Create PR to dev
 4. Merge PR
 5. When ready to sync upstream, create PR: dev → main
+
+## Support
+
+For deployment issues, refer to component-specific troubleshooting sections in the deployment guides.
 
 ## License
 
