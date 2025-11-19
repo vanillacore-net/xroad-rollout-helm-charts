@@ -7,7 +7,7 @@ The Central Server is the governance component of X-Road, managing member regist
 ## Prerequisites
 
 1. Kubernetes cluster with kubectl access
-2. Namespace `xroad-im` created
+2. Namespace `im-ns` created (automatically created by install script if missing)
 3. MetalLB installed and configured
 4. Test CA deployed and running
 5. PersistentVolume support available
@@ -29,42 +29,38 @@ Navigate to the chart directory and deploy:
 
 ```bash
 cd bb-im/x-road-csx/
-./install-xroad-im.sh
+./install_cs_1.sh
 ```
 
 ### Step 2: Verify Deployment
 
 Check pod status:
 ```bash
-kubectl get pods -n xroad-im -l app.kubernetes.io/component=central-server
+kubectl get pods -n im-ns -l app.kubernetes.io/component=central-server
 ```
 
 Expected output:
-- Pod: `cs-1-*` in Running state
-- StatefulSet: `cs-1-db` (PostgreSQL database)
+- Pod: `xroad-cs1-*` in Running state
+- StatefulSet/Deployment: `cs1-db` (PostgreSQL database)
 
 Check services:
 ```bash
-kubectl get svc -n xroad-im | grep cs-1
+kubectl get svc -n im-ns | grep cs
 ```
 
-### Step 3: Deploy LoadBalancer Services
+### Step 3: Verify LoadBalancer Services
 
-Apply LoadBalancer services for external access:
+The Helm chart automatically creates LoadBalancer services when deployed. Verify they have been assigned external IPs:
 
 ```bash
-kubectl apply -f xroad-cs-admin-ui-4000-lb.yaml
-kubectl apply -f xroad-cs-admin-4001-lb.yaml
-kubectl apply -f xroad-cs-client-8443-lb.yaml
-kubectl apply -f xroad-cs-testca-9998-lb.yaml
+kubectl get svc -n im-ns | grep -E 'xroad-cs-(admin|reg)-lb'
 ```
 
-Verify LoadBalancer services have external IPs:
-```bash
-kubectl get svc -n xroad-im | grep xroad-cs
-```
+Expected LoadBalancer services:
+- `xroad-cs-admin-lb`: Port 4000 (Admin UI)
+- `xroad-cs-reg-lb`: Port 4001 (Member registration)
 
-All services should show `EXTERNAL-IP: 10.0.0.100`
+All services should show `EXTERNAL-IP: 10.0.0.100` (configured via MetalLB annotations in the Helm chart)
 
 ## Access
 
@@ -99,29 +95,29 @@ Login with default credentials (check deployed secrets).
 
 Check pod status and logs:
 ```bash
-kubectl describe pod <pod-name> -n xroad-im
-kubectl logs <pod-name> -n xroad-im
+kubectl describe pod <pod-name> -n im-ns
+kubectl logs <pod-name> -n im-ns
 ```
 
 ### LoadBalancer Has No Endpoints
 
 Verify service selector matches pod labels:
 ```bash
-kubectl get svc <service-name> -n xroad-im -o yaml | grep -A 3 "selector:"
-kubectl get pods -n xroad-im --show-labels
+kubectl get svc <service-name> -n im-ns -o yaml | grep -A 3 "selector:"
+kubectl get pods -n im-ns --show-labels
 ```
 
-If selectors don't match, update LoadBalancer service selectors.
+If selectors don't match, the Helm chart configuration may need adjustment.
 
 ### Cannot Access Admin UI
 
 Verify connectivity:
 ```bash
 # Check endpoints
-kubectl get endpoints -n xroad-im | grep admin-ui
+kubectl get endpoints -n im-ns | grep admin
 
 # Test from within cluster
-kubectl run -it --rm debug --image=curlimages/curl --restart=Never -- curl -k https://cs-1:4000
+kubectl run -it --rm debug --image=curlimages/curl --restart=Never -n im-ns -- curl -k https://xroad-cs-admin-lb:4000
 ```
 
 ## Post-Deployment
